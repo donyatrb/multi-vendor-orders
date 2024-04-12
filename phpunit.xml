@@ -14,6 +14,9 @@
         <testsuite name="Auth-Feature">
             <directory>app/Modules/Auth/Tests/Feature</directory>
         </testsuite>
+        <testsuite name="Delay-Report-Feature">
+            <directory>app/Modules/DelayReport/Tests/Feature</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>

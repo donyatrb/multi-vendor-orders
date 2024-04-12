@@ -20,4 +20,9 @@ class DelayedOrdersQueue extends Model
         'unchecked' => 'UNCHECKED',
         'checking' => 'CHECKING',
     ];
+
+    public static function checkDelayOrderQueueOfTheOrder(int $orderId): bool
+    {
+        return DelayedOrdersQueue::whereOrderId($orderId)->exists();
+    }
 }

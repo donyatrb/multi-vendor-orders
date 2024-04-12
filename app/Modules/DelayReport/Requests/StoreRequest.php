@@ -2,9 +2,9 @@
 
 namespace App\Modules\DelayReport\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Modules\Auth\Requests\BaseRequest;
 
-class StoreRequest extends FormRequest
+class StoreRequest extends BaseRequest
 {
     public function authorize()
     {
@@ -14,7 +14,7 @@ class StoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'order_id' => 'required|exists:orders',
+            'order_id' => 'required|exists:orders,id',
         ];
     }
 }

@@ -1,21 +1,22 @@
 <?php
 
-namespace App\Modules\Auth;
+namespace App\Modules\DelayReport;
 
 use Illuminate\Support\ServiceProvider;
 
-class AuthServiceProvider extends ServiceProvider
+class DelayReportServiceProvider extends ServiceProvider
 {
     public function register(): void
-    {
-    }
-
-    public function boot(): void
     {
         if ($this->app->routesAreCached()) {
             return;
         }
 
         $this->loadRoutesFrom(__DIR__.'/routes.php');
+    }
+
+    public function boot(): void
+    {
+        //
     }
 }

@@ -5,8 +5,8 @@ namespace App\Modules\DelayReport\DTOs;
 class NewDeliveryTimeResponseDto
 {
     public function __construct(readonly public bool $status,
-                                readonly public string $deliveryTime,
-                                readonly public ?string $message = null)
+        readonly public ?string $deliveryTime = null,
+        readonly public ?string $message = null)
     {
     }
 

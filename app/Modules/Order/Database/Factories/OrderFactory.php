@@ -28,9 +28,6 @@ class OrderFactory extends Factory
         ];
     }
 
-    /**
-     * Define the "delayed" state for the order.
-     */
     public function delayed(): Factory
     {
         return $this->state(function (array $attributes) {

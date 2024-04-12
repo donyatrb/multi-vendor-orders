@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class DelayedOrdersQueueFactory extends Factory
 {
+    protected $model = DelayedOrdersQueue::class;
+
     /**
      * Define the model's default state.
      *

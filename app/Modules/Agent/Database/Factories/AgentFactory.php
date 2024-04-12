@@ -3,7 +3,6 @@
 namespace App\Modules\Agent\Database\Factories;
 
 use App\Modules\Agent\Models\Agent;
-use App\Modules\Vendor\Models\Vendor;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

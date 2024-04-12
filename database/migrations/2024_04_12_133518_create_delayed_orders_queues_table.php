@@ -13,6 +13,7 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('order_id')
+                ->unique()
                 ->references('id')
                 ->on('orders')
                 ->cascadeOnUpdate();
