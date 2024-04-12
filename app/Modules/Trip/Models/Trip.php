@@ -20,4 +20,12 @@ class Trip extends Model
         'picked' => 'PICKED',
         'delivered' => 'DELIVERED',
     ];
+
+    public static function findNonDelivered(int $orderId): ?self
+    {
+        return Trip::whereOrderId($orderId)
+            ->whereNot('status', Trip::STATUSES['delivered'])
+            ->latest()
+            ->first();
+    }
 }

@@ -2,44 +2,29 @@
 
 namespace App\Modules\DelayReport\Controllers;
 
-use App\Modules\DelayReport\Models\DelayReport;
 use App\Modules\DelayReport\Requests\StoreRequest;
-use App\Modules\Order\Models\Order;
-use App\Modules\Trip\Models\Trip;
+use App\Modules\DelayReport\Services\DelayReportService;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Http;
+use Symfony\Component\HttpFoundation\Response;
 
 class DelayReportController extends Controller
 {
+    private DelayReportService $service;
+
+    public function __construct()
+    {
+        $this->service = app(DelayReportService::class);
+    }
+
     public function store(StoreRequest $request)
     {
-        $trip = Trip::whereOrderId($request->order_id)
-            ->whereNot('status', Trip::STATUSES['delivered'])
-            ->latest()
-            ->first();
+        $storeRes = $this->service->store($request->order_id);
+        $status = $storeRes->status;
+        $code = $status ? Response::HTTP_OK : Response::HTTP_INTERNAL_SERVER_ERROR;
 
-        $order = Order::find($request->order_id);
-
-        if ($order->delivery_time->greaterThan(now())) {
-            return response(['message' => 'delivery time has not been yet touched!']);
-        }
-
-        DelayReport::create([
-            'order_id' => $order->id,
-            'vendor_id' => $order->vendor_id,
-            'delay_time' => $order->delivery_time->diffInUTCMinutes(now())
-        ]);
-
-        // @todo
-        if ($trip) {
-           return Http::get(config('services.delay_report.new_delivery_time'))->json();
-
-           // Response DTO and return response
-
-            // call the api
-            // update order->delivery_time
-        }
-
-
+        return response()->json([
+            'status' => $status,
+            'message' => $storeRes->message,
+        ], $code);
     }
 }

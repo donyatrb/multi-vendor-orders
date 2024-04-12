@@ -21,7 +21,6 @@ class AgentFactory extends Factory
     public function definition(): array
     {
         return [
-            'vendor_id' => Vendor::inRandomOrder()->first()->id,
             'first_name' => $this->faker->name,
             'last_name' => $this->faker->lastName,
         ];

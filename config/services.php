@@ -32,7 +32,7 @@ return [
     ],
 
     'delay_report' => [
-        'new_delivery_time' => env('NEW_DELIVERY_TIME_URL')
-    ]
+        'new_delivery_time' => env('NEW_DELIVERY_TIME_URL'),
+    ],
 
 ];
