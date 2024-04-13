@@ -40,8 +40,14 @@ class DelayReportController extends Controller
         ]);
     }
 
-    public function update(UpdateRequest $request)
+    public function update(UpdateRequest $request, int $delayedOrdersQueueId)
     {
+        $updateRes = $this->service->update($request->agent_id, $delayedOrdersQueueId);
 
+        if ($updateRes) {
+            return response()->json('', Response::HTTP_NO_CONTENT);
+        }
+
+        return response()->json(['status' => false, 'message' => 'sth went wrong!'], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

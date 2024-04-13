@@ -25,4 +25,13 @@ class Agent extends Model
     {
         return $this->hasMany(DelayedOrdersQueue::class);
     }
+
+    public function hasAssignedDelayedOrder(): bool
+    {
+        return $this->delayedOrdersQueues
+            ->filter(function ($queue) {
+                return $queue->status !== DelayedOrdersQueue::STATUSES['checked'];
+            })
+            ->isNotEmpty();
+    }
 }

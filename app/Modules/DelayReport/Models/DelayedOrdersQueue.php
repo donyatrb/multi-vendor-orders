@@ -44,11 +44,15 @@ class DelayedOrdersQueue extends Model
     {
         return DelayedOrdersQueue::query()
             ->whereNull('agent_id')
-            ->orWhere(function ($query) {
-                return $query->whereNotNull('agent_id')
-                    ->where('status', DelayedOrdersQueue::STATUSES['checked']);
-            })
             ->with(['agent', 'order'])
+            ->orderBy('create_at')
             ->get();
+    }
+
+    public static function isNotDelayedOrderAssignable(int $delayedOrderQueueId): bool
+    {
+        return DelayedOrdersQueue::where('id', $delayedOrderQueueId)
+            ->whereNull('agent_id')
+            ->doesntExist();
     }
 }

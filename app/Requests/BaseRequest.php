@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Modules\Auth\Requests;
+namespace App\Requests;
 
-use App\Modules\Auth\DTOs\AuthResponseDto;
-use App\Modules\Auth\Exceptions\ApiErrorException;
+use App\DTOs\BaseResponseDto;
+use App\Exceptions\ApiErrorException;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -23,12 +23,12 @@ class BaseRequest extends FormRequest
         throw new ApiErrorException('', 0, null, responseDto: $response);
     }
 
-    private function prepareErrorResponse(array $errors): AuthResponseDto
+    protected function prepareErrorResponse(array $errors): BaseResponseDto
     {
-        $response = new AuthResponseDto();
+        $response = new BaseResponseDto();
 
         $response->code = Response::HTTP_UNPROCESSABLE_ENTITY;
-        $response->status = AuthResponseDto::FAILED;
+        $response->status = BaseResponseDto::FAILED;
         $response->messages = $errors;
 
         return $response;

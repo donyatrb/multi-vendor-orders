@@ -65,6 +65,11 @@ class DelayReportService
         return DelayedOrdersQueue::assignableDelayedOrders();
     }
 
+    public function update(int $agentId, int $delayedOrdersQueueId): bool|int
+    {
+        return DelayedOrdersQueue::find($delayedOrdersQueueId)->update(['agent_id' => $agentId]);
+    }
+
     private function getNewDeliveryTime(Order $order): DelayReportResponseDto
     {
         $apiRes = Http::get(config('services.delay_report.new_delivery_time'))->json();

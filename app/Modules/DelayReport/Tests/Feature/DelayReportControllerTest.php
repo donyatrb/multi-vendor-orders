@@ -4,6 +4,7 @@ namespace App\Modules\DelayReport\Tests\Feature;
 
 use App\Modules\Agent\Models\Agent;
 use App\Modules\DelayReport\Models\DelayedOrdersQueue;
+use App\Modules\DelayReport\Services\DelayReportService;
 use App\Modules\Order\Models\Order;
 use App\Modules\Trip\Models\Trip;
 use App\Modules\Vendor\Models\Vendor;
@@ -255,6 +256,86 @@ class DelayReportControllerTest extends TestCase
                 ],
             ]);
     }
+
+    // end of GET function
+
+    // start of UPDATE function
+
+    /** @test */
+    public function delayed_order_cannot_be_assigned_to_agent_with_open_delayed_order()
+    {
+        Vendor::factory()->create();
+
+        $delayedOrderQueue = DelayedOrdersQueue::factory()->create();
+        $agent = Agent::factory()->create();
+        DelayedOrdersQueue::factory()->create([
+            'status' => 'CHECKING',
+        ]);
+
+        $this->post('order-delay-report/'.$delayedOrderQueue->id, ['agent_id' => $agent->id])
+            ->assertStatus(422)
+            ->assertJson([
+                'status' => 'failed',
+                'message' => ['agent_id' => ['This agent has open delayed order']],
+            ]);
+    }
+
+    /** @test */
+    public function picked_delayed_order_queue_cannot_be_assigned()
+    {
+        Vendor::factory()->create();
+
+        $agent = Agent::factory()->create();
+        $delayedOrderQueue = DelayedOrdersQueue::factory()->create([
+            'agent_id' => $agent->id,
+        ]);
+        $agent = Agent::factory()->create();
+
+        $this->post('order-delay-report/'.$delayedOrderQueue->id, ['agent_id' => $agent->id])
+            ->assertStatus(422)
+            ->assertJson([
+                'status' => 'failed',
+                'message' => ['delayedOrdersQueue' => ['This delayed order is picked by another agent']],
+            ]);
+    }
+
+    /** @test */
+    public function assign_delayed_order_to_agent_successfully()
+    {
+        Vendor::factory()->create();
+
+        $delayedOrderQueue = DelayedOrdersQueue::factory()->create();
+        $agent = Agent::factory()->create();
+
+        $this->post('order-delay-report/'.$delayedOrderQueue->id, ['agent_id' => $agent->id])
+            ->assertNoContent();
+
+        $this->assertDatabaseHas('delayed_orders_queues', [
+            'agent_id' => $agent->id,
+        ]);
+    }
+
+    /** @test */
+    public function error_occurred_when_assigning_delayed_order_to_agent_fails()
+    {
+        Vendor::factory()->create();
+
+        $delayedOrderQueue = DelayedOrdersQueue::factory()->create();
+        $agent = Agent::factory()->create();
+
+        $this->mock(DelayReportService::class)->makePartial()
+            ->shouldReceive('update')
+            ->andReturn(false);
+
+        $this->post('order-delay-report/'.$delayedOrderQueue->id, ['agent_id' => $agent->id])
+            ->assertInternalServerError()
+            ->assertJson([
+                'status' => false,
+                'message' => 'sth went wrong!',
+            ]);
+    }
+
+    // end of UPDATE function
 
     private function fakeSuccessResponse(string $deliveryTime): array
     {

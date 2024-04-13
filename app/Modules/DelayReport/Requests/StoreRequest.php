@@ -2,7 +2,7 @@
 
 namespace App\Modules\DelayReport\Requests;
 
-use App\Modules\Auth\Requests\BaseRequest;
+use App\Requests\BaseRequest;
 
 class StoreRequest extends BaseRequest
 {
