@@ -25,13 +25,13 @@ class DelayReport extends Model
         return $this->belongsTo(Vendor::class);
     }
 
-    public static function vendorsWeeklyReport(): ?Collection
+    public static function vendorsWeeklyReport(int $perPage): ?\Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        return DelayReport::where('created_at', '>=', today()->subWeek()->toDateTimeString())
+        return DelayReport::query()->where('created_at', '>=', today()->subWeek()->toDateTimeString())
             ->select(DB::raw('sum(delay_time) as sum, vendor_id'))
             ->groupBy('vendor_id')
             ->orderByDesc('sum')
             ->with('vendor')
-            ->get();
+            ->paginate($perPage);
     }
 }

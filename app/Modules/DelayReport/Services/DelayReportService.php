@@ -87,8 +87,8 @@ class DelayReportService
         throw new \Exception('New delivery time api response is not successful!');
     }
 
-    public function getVendorsWeeklyDelayReports(): ?Collection
+    public function getVendorsWeeklyDelayReports(int $perPage): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
-        return DelayReport::vendorsWeeklyReport();
+        return DelayReport::vendorsWeeklyReport($perPage);
     }
 }

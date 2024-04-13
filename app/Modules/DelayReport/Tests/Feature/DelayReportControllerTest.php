@@ -349,7 +349,7 @@ class DelayReportControllerTest extends TestCase
 
         $this->createDelayReports();
 
-        $this->get('order-delay-report/vendors/weekly')
+        $this->get('order-delay-report/vendors/weekly/3')
             ->assertOk()
             ->assertJsonStructure([
                 'status',

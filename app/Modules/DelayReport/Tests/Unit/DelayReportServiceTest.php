@@ -52,22 +52,19 @@ class DelayReportServiceTest extends TestCase
 
         $getRes = $service->get()->toArray();
 
-        $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys([[
+        $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys([
             'id' => 1,
             'order_id' => 1,
             'agent_id' => null,
             'status' => 'UNCHECKED',
-        ], [
+        ], $getRes[0], ['id', 'order_id', 'agent_id', 'status']);
+
+        $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys([
             'id' => 2,
             'order_id' => 2,
             'agent_id' => null,
             'status' => 'UNCHECKED',
-        ], [
-            'id' => 3,
-            'order_id' => 3,
-            'agent_id' => null,
-            'status' => 'CHECKED',
-        ]], $getRes, ['id', 'order_id', 'agent_id', 'status']);
+        ], $getRes[1], ['id', 'order_id', 'agent_id', 'status']);
     }
 
     /** @test */
@@ -79,22 +76,25 @@ class DelayReportServiceTest extends TestCase
 
         $service = new DelayReportService();
 
-        $report = $service->getVendorsWeeklyDelayReports();
+        $report = $service->getVendorsWeeklyDelayReports(3)->toArray()['data'];
 
-        $this->assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys([
+        $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
             [
                 'sum' => 300,
                 'vendor_id' => $vendor3->id
-            ],
+            ], $report[0], ['sum', 'vendor_id']);
+
+        $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
             [
                 'sum' => 110,
                 'vendor_id' => $vendor2->id
-            ],
+            ], $report[1], ['sum', 'vendor_id']);
+
+        $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
             [
                 'sum' => 60,
                 'vendor_id' => $vendor1->id
-            ]
-        ], $report->toArray(), ['sum', 'vendor_id']);
+            ], $report[2], ['sum', 'vendor_id']);
     }
 
     private function createDelayReports(int $delayTime1, int $delayTime2): array

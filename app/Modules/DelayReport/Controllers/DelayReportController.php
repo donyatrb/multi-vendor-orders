@@ -52,9 +52,9 @@ class DelayReportController extends Controller
         return response()->json(['status' => false, 'message' => 'sth went wrong!'], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
-    public function vendorsWeeklyReport()
+    public function vendorsWeeklyReport(int $perPage)
     {
-        $report = $this->service->getVendorsWeeklyDelayReports();
+        $report = $this->service->getVendorsWeeklyDelayReports($perPage);
 
         return response()->json([
             'status' => true,
