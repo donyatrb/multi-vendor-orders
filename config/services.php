@@ -35,4 +35,8 @@ return [
         'new_delivery_time' => env('NEW_DELIVERY_TIME_URL'),
     ],
 
+    'vendors-weekly-report' => [
+        'cache-ttl' => env('VENDOR_WEEKLY_REPORT_CACHE_TTL', 5)
+    ]
+
 ];

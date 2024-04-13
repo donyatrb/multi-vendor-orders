@@ -102,7 +102,7 @@ class DelayReportService
             return Cache::get(self::REPORT_PAGE . $page);
         }
 
-        Cache::remember(self::REPORT_PAGE . $page, 3, function() use ($perPage) {
+        Cache::remember(self::REPORT_PAGE . $page, config('services.vendors-weekly-report.cache-ttl'), function() use ($perPage) {
             return DelayReport::vendorsWeeklyReport($perPage);
         });
 
