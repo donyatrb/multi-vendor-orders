@@ -1,0 +1,62 @@
+version: '3'
+services:
+
+    #PHP
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        # image: app/php
+        container_name: app
+        restart: unless-stopped
+        tty: true
+        environment:
+            SERVICE_NAME: app
+            SERVICE_TAGS: dev
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+        #   - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+        depends_on:
+            - db
+        networks:
+            - app-network
+
+    #Nginx
+    webserver:
+        image: hub.hamdocker.ir/nginx:alpine
+        container_name: webserver
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "8989:80"
+            - "443:443"
+        volumes:
+            - ./:/var/www
+        #   - ./nginx/:/etc/nginx/conf.d/
+        networks:
+            - app-network
+
+    #mariadb
+    db:
+        container_name: db
+        image: mariadb:10.4.26
+        environment:
+            MARIADB_ROOT_PASSWORD: root
+            MARIADB_DATABASE: ${DB_DATABASE}
+            MARIADB_USER: ${DB_USERNAME}
+            MARIADB_PASSWORD: ${DB_PASSWORD}
+            MARIADB_RANDOM_ROOT_PASSWORD: ""
+        ports:
+            - "3306:3306"
+        networks:
+            - app-network
+
+#Networks
+networks:
+    app-network:
+        driver: bridge
+#Volumes
+volumes:
+    dbdata:
+        driver: local
