@@ -9,6 +9,8 @@ use App\Modules\DelayReport\Services\DelayReportService;
 use App\Modules\Order\Models\Order;
 use App\Modules\Vendor\Models\Vendor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class DelayReportServiceTest extends TestCase
@@ -77,6 +79,38 @@ class DelayReportServiceTest extends TestCase
         $service = new DelayReportService();
 
         $report = $service->getVendorsWeeklyDelayReports(3)->toArray()['data'];
+
+        $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
+            [
+                'sum' => 300,
+                'vendor_id' => $vendor3->id
+            ], $report[0], ['sum', 'vendor_id']);
+
+        $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
+            [
+                'sum' => 110,
+                'vendor_id' => $vendor2->id
+            ], $report[1], ['sum', 'vendor_id']);
+
+        $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
+            [
+                'sum' => 60,
+                'vendor_id' => $vendor1->id
+            ], $report[2], ['sum', 'vendor_id']);
+    }
+
+    /** @test */
+    public function check_cache_in_sum_of_delay_reports_according_to_vendors()
+    {
+        [$vendor1] = $this->createDelayReports(20, 40);
+        [$vendor2] = $this->createDelayReports(50, 60);
+        [$vendor3] = $this->createDelayReports(100, 200);
+
+        $service = new DelayReportService();
+
+        $service->getVendorsWeeklyDelayReports(3);
+
+        $report = Cache::get('report_page_1')->toArray()['data'];
 
         $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
             [

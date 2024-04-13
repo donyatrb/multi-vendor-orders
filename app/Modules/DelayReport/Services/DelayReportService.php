@@ -9,11 +9,15 @@ use App\Modules\DelayReport\Models\DelayReport;
 use App\Modules\Order\Models\Order;
 use App\Modules\Trip\Models\Trip;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class DelayReportService
 {
+    const REPORT_PAGE = 'report_page_';
+
     public function store(int $orderId): DelayReportResponseDto
     {
         /** @var Order $order */
@@ -87,8 +91,16 @@ class DelayReportService
         throw new \Exception(__('delay-report.new_delivery_time_api_response_is_not_successful'));
     }
 
-    public function getVendorsWeeklyDelayReports(int $perPage): \Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public function getVendorsWeeklyDelayReports(int $perPage, int $page = 1): LengthAwarePaginator
     {
+        if (Cache::has(self::REPORT_PAGE . $page)) {
+            return Cache::get(self::REPORT_PAGE . $page);
+        }
+
+        Cache::remember(self::REPORT_PAGE . $page, 3, function() use ($perPage) {
+            return DelayReport::vendorsWeeklyReport($perPage);
+        });
+
         return DelayReport::vendorsWeeklyReport($perPage);
     }
 }

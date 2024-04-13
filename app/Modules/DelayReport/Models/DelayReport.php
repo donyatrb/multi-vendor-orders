@@ -3,7 +3,7 @@
 namespace App\Modules\DelayReport\Models;
 
 use App\Modules\Vendor\Models\Vendor;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,7 +25,7 @@ class DelayReport extends Model
         return $this->belongsTo(Vendor::class);
     }
 
-    public static function vendorsWeeklyReport(int $perPage): ?\Illuminate\Contracts\Pagination\LengthAwarePaginator
+    public static function vendorsWeeklyReport(int $perPage): ?LengthAwarePaginator
     {
         return DelayReport::query()->where('created_at', '>=', today()->subWeek()->toDateTimeString())
             ->select(DB::raw('sum(delay_time) as sum, vendor_id'))
