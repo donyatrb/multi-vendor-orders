@@ -273,7 +273,7 @@ class DelayReportControllerTest extends TestCase
             'status' => 'CHECKING',
         ]);
 
-        $this->post('order-delay-report/'.$delayedOrderQueue->id, ['agent_id' => $agent->id])
+        $this->patch('order-delay-report/'.$delayedOrderQueue->id, ['agent_id' => $agent->id])
             ->assertStatus(422)
             ->assertJson([
                 'status' => 'failed',
@@ -292,7 +292,7 @@ class DelayReportControllerTest extends TestCase
         ]);
         $agent = Agent::factory()->create();
 
-        $this->post('order-delay-report/'.$delayedOrderQueue->id, ['agent_id' => $agent->id])
+        $this->patch('order-delay-report/'.$delayedOrderQueue->id, ['agent_id' => $agent->id])
             ->assertStatus(422)
             ->assertJson([
                 'status' => 'failed',
@@ -308,7 +308,7 @@ class DelayReportControllerTest extends TestCase
         $delayedOrderQueue = DelayedOrdersQueue::factory()->create();
         $agent = Agent::factory()->create();
 
-        $this->post('order-delay-report/'.$delayedOrderQueue->id, ['agent_id' => $agent->id])
+        $this->patch('order-delay-report/'.$delayedOrderQueue->id, ['agent_id' => $agent->id])
             ->assertNoContent();
 
         $this->assertDatabaseHas('delayed_orders_queues', [
@@ -328,7 +328,7 @@ class DelayReportControllerTest extends TestCase
             ->shouldReceive('update')
             ->andReturn(false);
 
-        $this->post('order-delay-report/'.$delayedOrderQueue->id, ['agent_id' => $agent->id])
+        $this->patch('order-delay-report/'.$delayedOrderQueue->id, ['agent_id' => $agent->id])
             ->assertInternalServerError()
             ->assertJson([
                 'status' => false,
@@ -367,6 +367,9 @@ class DelayReportControllerTest extends TestCase
                         'delay_time',
                     ],
                 ],
+                'total',
+                'currentPage',
+                'lastPage'
             ]);
     }
 

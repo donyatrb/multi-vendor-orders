@@ -59,6 +59,9 @@ class DelayReportController extends Controller
         return response()->json([
             'status' => true,
             'data' => new VendorsWeeklyDelayReportCollection($report),
+            'total' => $report->total(),
+            'currentPage' => $report->currentPage(),
+            'lastPage' => $report->lastPage(),
         ]);
     }
 }
