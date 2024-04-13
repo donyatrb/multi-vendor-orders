@@ -23,7 +23,7 @@ class DelayedOrdersQueueFactory extends Factory
     {
         return [
             'order_id' => Order::factory()->create()->id,
-            'agent_id' => Agent::inRandomOrder()->first()->id,
+            'agent_id' => Agent::inRandomOrder()->first()?->id,
             'status' => $this->faker->randomElement(array_values(DelayedOrdersQueue::STATUSES)),
         ];
     }

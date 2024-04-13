@@ -2,7 +2,9 @@
 
 namespace App\Modules\DelayReport\Controllers;
 
+use App\Modules\DelayReport\Collections\DelayedOrdersQueueCollection;
 use App\Modules\DelayReport\Requests\StoreRequest;
+use App\Modules\DelayReport\Requests\UpdateRequest;
 use App\Modules\DelayReport\Services\DelayReportService;
 use Illuminate\Routing\Controller;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,5 +28,20 @@ class DelayReportController extends Controller
             'status' => $status,
             'message' => $storeRes->message,
         ], $code);
+    }
+
+    public function index()
+    {
+        $delayedOrders = $this->service->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => new DelayedOrdersQueueCollection($delayedOrders),
+        ]);
+    }
+
+    public function update(UpdateRequest $request)
+    {
+
     }
 }

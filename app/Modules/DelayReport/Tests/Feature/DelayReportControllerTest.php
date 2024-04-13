@@ -25,6 +25,8 @@ class DelayReportControllerTest extends TestCase
         ]);
     }
 
+    // start of STORE function
+
     /** @test */
     public function error_occurred_when_order_does_not_exist()
     {
@@ -205,7 +207,7 @@ class DelayReportControllerTest extends TestCase
         Carbon::setTestNow($now);
 
         DelayedOrdersQueue::factory()->create([
-            'order_id' => $order->id
+            'order_id' => $order->id,
         ]);
 
         $this->post('order-delay-report', ['order_id' => $order->id])
@@ -213,6 +215,44 @@ class DelayReportControllerTest extends TestCase
             ->assertJson([
                 'status' => false,
                 'message' => 'Delay has already been submitted for this order.',
+            ]);
+    }
+
+    // end of STORE function
+
+    // start of GET function
+
+    /** @test */
+    public function check_structure_of_assignable_delayed_orders_queues()
+    {
+        Vendor::factory()->create();
+        Agent::factory()->create();
+
+        DelayedOrdersQueue::factory()->create([
+            'agent_id' => null,
+            'status' => 'UNCHECKED',
+        ]);
+
+        DelayedOrdersQueue::factory()->create([
+            'status' => 'CHECKING',
+        ]);
+
+        DelayedOrdersQueue::factory()->create([
+            'status' => 'CHECKED',
+        ]);
+
+        $this->get('order-delay-report')
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'status',
+                'data' => [
+                    '*' => [
+                        'id',
+                        'status',
+                        'agent',
+                        'order' => ['totalPrice', 'deliveryTime'],
+                    ],
+                ],
             ]);
     }
 

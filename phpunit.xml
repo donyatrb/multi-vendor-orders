@@ -17,6 +17,9 @@
         <testsuite name="Delay-Report-Feature">
             <directory>app/Modules/DelayReport/Tests/Feature</directory>
         </testsuite>
+        <testsuite name="Delay-Report-Unit">
+            <directory>app/Modules/DelayReport/Tests/Unit</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>

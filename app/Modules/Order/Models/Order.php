@@ -2,10 +2,12 @@
 
 namespace App\Modules\Order\Models;
 
+use App\Modules\DelayReport\Models\DelayedOrdersQueue;
 use App\Modules\Vendor\Models\Vendor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int vendor_id
@@ -31,6 +33,11 @@ class Order extends Model
     public function vendor(): BelongsTo
     {
         return $this->belongsTo(Vendor::class);
+    }
+
+    public function delayedOrdersQueue(): HasOne
+    {
+        return $this->hasOne(DelayedOrdersQueue::class);
     }
 
     public function deliveryTimeHasNotReached(): bool

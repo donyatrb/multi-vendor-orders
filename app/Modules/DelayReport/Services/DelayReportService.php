@@ -8,6 +8,7 @@ use App\Modules\DelayReport\Models\DelayedOrdersQueue;
 use App\Modules\DelayReport\Models\DelayReport;
 use App\Modules\Order\Models\Order;
 use App\Modules\Trip\Models\Trip;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
@@ -59,7 +60,12 @@ class DelayReportService
         }
     }
 
-    private function getNewDeliveryTime(Order $order)
+    public function get(): ?Collection
+    {
+        return DelayedOrdersQueue::assignableDelayedOrders();
+    }
+
+    private function getNewDeliveryTime(Order $order): DelayReportResponseDto
     {
         $apiRes = Http::get(config('services.delay_report.new_delivery_time'))->json();
 
