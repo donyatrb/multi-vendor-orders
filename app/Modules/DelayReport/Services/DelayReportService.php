@@ -23,6 +23,7 @@ class DelayReportService
         /** @var Order $order */
         $order = Order::find($orderId);
 
+        // here is being checked if delivery time reached
         if ($order->deliveryTimeHasNotReached()) {
             return new DelayReportResponseDto(status: false, message: __('delay-report.delivery_time_has_not_been_yet_touched'));
         }
@@ -30,6 +31,7 @@ class DelayReportService
         DB::beginTransaction();
         try {
 
+            // for both approaches we need to have delay report
             DelayReport::create([
                 'order_id' => $order->id,
                 'vendor_id' => $order->vendor_id,
@@ -38,6 +40,7 @@ class DelayReportService
 
             $trip = Trip::findNonDelivered($orderId);
 
+            // if the trip is not delivered, it determines the new delivery time
             if ($trip) {
                 $res = $this->getNewDeliveryTime(order: $order);
                 DB::commit();
@@ -45,11 +48,13 @@ class DelayReportService
                 return $res;
             }
 
+            // return error if another delay order has been submitted before
             if (DelayedOrdersQueue::checkDelayOrderQueueOfTheOrder(orderId: $orderId)) {
                 DB::commit();
                 return new DelayReportResponseDto(status: false, message: __('delay-report.delay_has_already_been_submitted_for_this_order'));
             }
 
+            // if this order doesnt have any trip or the trip is delivered, it should be added to delay orders queue
             DelayedOrdersQueue::query()->create([
                 'order_id' => $orderId,
             ]);
