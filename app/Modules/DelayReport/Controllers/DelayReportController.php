@@ -3,6 +3,7 @@
 namespace App\Modules\DelayReport\Controllers;
 
 use App\Modules\DelayReport\Collections\DelayedOrdersQueueCollection;
+use App\Modules\DelayReport\Collections\VendorsWeeklyDelayReportCollection;
 use App\Modules\DelayReport\Requests\StoreRequest;
 use App\Modules\DelayReport\Requests\UpdateRequest;
 use App\Modules\DelayReport\Services\DelayReportService;
@@ -49,5 +50,15 @@ class DelayReportController extends Controller
         }
 
         return response()->json(['status' => false, 'message' => 'sth went wrong!'], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
+
+    public function vendorsWeeklyReport()
+    {
+        $report = $this->service->getVendorsWeeklyDelayReports();
+
+        return response()->json([
+            'status' => true,
+            'data' => new VendorsWeeklyDelayReportCollection($report),
+        ]);
     }
 }

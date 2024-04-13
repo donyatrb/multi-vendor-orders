@@ -85,4 +85,9 @@ class DelayReportService
 
         throw new \Exception('New delivery time api response is not successful!');
     }
+
+    public function getVendorsWeeklyDelayReports(): ?Collection
+    {
+        return DelayReport::vendorsWeeklyReport();
+    }
 }

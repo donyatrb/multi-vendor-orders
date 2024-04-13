@@ -4,6 +4,7 @@ namespace App\Modules\DelayReport\Tests\Feature;
 
 use App\Modules\Agent\Models\Agent;
 use App\Modules\DelayReport\Models\DelayedOrdersQueue;
+use App\Modules\DelayReport\Models\DelayReport;
 use App\Modules\DelayReport\Services\DelayReportService;
 use App\Modules\Order\Models\Order;
 use App\Modules\Trip\Models\Trip;
@@ -337,6 +338,40 @@ class DelayReportControllerTest extends TestCase
 
     // end of UPDATE function
 
+    // start of VENDORS WEEKLY REPORT function
+
+    /** @test */
+    public function get_vendors_weekly_report()
+    {
+        $this->createDelayReports();
+
+        $this->createDelayReports();
+
+        $this->createDelayReports();
+
+        $this->get('order-delay-report/vendors/weekly')
+            ->assertOk()
+            ->assertJsonStructure([
+                'status',
+                'data' => [
+                    '*' => [
+                        'id',
+                        'vendor' => [
+                            'id',
+                            'name',
+                            'phone_num',
+                            'address',
+                            'created_at',
+                            'updated_at',
+                        ],
+                        'delay_time',
+                    ],
+                ],
+            ]);
+    }
+
+    // end of VENDORS WEEKLY REPORT function
+
     private function fakeSuccessResponse(string $deliveryTime): array
     {
         return [
@@ -351,5 +386,22 @@ class DelayReportControllerTest extends TestCase
             'status' => false,
             'message' => 'sth',
         ];
+    }
+
+    private function createDelayReports(): array
+    {
+        $vendor = Vendor::factory()->create();
+        $order = Order::factory()->create();
+        DelayReport::factory()->create([
+            'vendor_id' => $vendor->id,
+            'order_id' => $order->id,
+        ]);
+        $order = Order::factory()->create();
+        DelayReport::factory()->create([
+            'vendor_id' => $vendor->id,
+            'order_id' => $order->id,
+        ]);
+
+        return [$vendor, $order];
     }
 }

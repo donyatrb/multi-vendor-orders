@@ -2,6 +2,7 @@
 
 namespace App\Modules\Vendor\Models;
 
+use App\Modules\DelayReport\Models\DelayReport;
 use App\Modules\Order\Models\Order;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,5 +21,10 @@ class Vendor extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function delayReports(): HasMany
+    {
+        return $this->hasMany(DelayReport::class);
     }
 }
