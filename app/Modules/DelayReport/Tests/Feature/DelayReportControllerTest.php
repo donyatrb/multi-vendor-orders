@@ -59,7 +59,7 @@ class DelayReportControllerTest extends TestCase
             ->assertStatus(500)
             ->assertJson([
                 'status' => false,
-                'message' => 'delivery time has not been yet touched!',
+                'message' => 'زمان آماده سازی و ارسال هنوز فرانرسیده است.',
             ]);
     }
 
@@ -157,7 +157,7 @@ class DelayReportControllerTest extends TestCase
             ->assertStatus(500)
             ->assertJson([
                 'status' => false,
-                'message' => 'An error occurred during order delay submission!',
+                'message' => 'خطایی در حین ثبت تاخیر سفارش رخ داد!',
             ]);
     }
 
@@ -179,7 +179,7 @@ class DelayReportControllerTest extends TestCase
             ->assertStatus(200)
             ->assertJson([
                 'status' => true,
-                'message' => 'Order delay has been successfully submitted!',
+                'message' => 'تاخیر سفارش با موفقیت ثبت شد.',
             ]);
 
         $this->assertDatabaseHas('delayed_orders_queues', [
@@ -216,7 +216,7 @@ class DelayReportControllerTest extends TestCase
             ->assertStatus(500)
             ->assertJson([
                 'status' => false,
-                'message' => 'Delay has already been submitted for this order.',
+                'message' => 'تاخیر قبلا برای این سفارش ثبت شده است.',
             ]);
     }
 
@@ -332,7 +332,7 @@ class DelayReportControllerTest extends TestCase
             ->assertInternalServerError()
             ->assertJson([
                 'status' => false,
-                'message' => 'sth went wrong!',
+                'message' => 'خطایی رخ داده است!',
             ]);
     }
 

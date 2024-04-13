@@ -49,7 +49,7 @@ class DelayReportController extends Controller
             return response()->json('', Response::HTTP_NO_CONTENT);
         }
 
-        return response()->json(['status' => false, 'message' => 'sth went wrong!'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        return response()->json(['status' => false, 'message' => __('general.sth_went_wrong')], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     public function vendorsWeeklyReport(int $perPage)

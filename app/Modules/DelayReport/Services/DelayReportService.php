@@ -20,7 +20,7 @@ class DelayReportService
         $order = Order::find($orderId);
 
         if ($order->deliveryTimeHasNotReached()) {
-            return new DelayReportResponseDto(status: false, message: 'delivery time has not been yet touched!');
+            return new DelayReportResponseDto(status: false, message: __('delay-report.delivery_time_has_not_been_yet_touched'));
         }
 
         DB::beginTransaction();
@@ -43,7 +43,7 @@ class DelayReportService
 
             if (DelayedOrdersQueue::checkDelayOrderQueueOfTheOrder(orderId: $orderId)) {
                 DB::commit();
-                return new DelayReportResponseDto(status: false, message: 'Delay has already been submitted for this order.');
+                return new DelayReportResponseDto(status: false, message: __('delay-report.delay_has_already_been_submitted_for_this_order'));
             }
 
             DelayedOrdersQueue::query()->create([
@@ -52,12 +52,12 @@ class DelayReportService
 
             DB::commit();
 
-            return new DelayReportResponseDto(status: true, message: 'Order delay has been successfully submitted!');
+            return new DelayReportResponseDto(status: true, message: __('delay-report.order_delay_has_been_successfully_submitted'));
         } catch (\Exception $exception) {
             DB::rollBack();
             logger()->error($exception->getMessage());
 
-            return new DelayReportResponseDto(status: false, message: 'An error occurred during order delay submission!');
+            return new DelayReportResponseDto(status: false, message: __('delay-report.error_during_order_delay_submission'));
         }
     }
 
@@ -81,10 +81,10 @@ class DelayReportService
             $order->delivery_time = $newDeliveryTimeDto->deliveryTime;
             $order->save();
 
-            return new DelayReportResponseDto(status: true, message: 'New delivery time has been set!');
+            return new DelayReportResponseDto(status: true, message: __('delay-report.new_delivery_time_has_been_set'));
         }
 
-        throw new \Exception('New delivery time api response is not successful!');
+        throw new \Exception(__('delay-report.new_delivery_time_api_response_is_not_successful'));
     }
 
     public function getVendorsWeeklyDelayReports(int $perPage): \Illuminate\Contracts\Pagination\LengthAwarePaginator
