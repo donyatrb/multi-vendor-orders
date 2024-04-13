@@ -45,7 +45,7 @@ class DelayedOrdersQueue extends Model
         return DelayedOrdersQueue::query()
             ->whereNull('agent_id')
             ->with(['agent', 'order'])
-            ->orderBy('create_at')
+            ->orderBy('created_at')
             ->get();
     }
 

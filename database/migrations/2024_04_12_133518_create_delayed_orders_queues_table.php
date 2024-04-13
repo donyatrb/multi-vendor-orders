@@ -27,6 +27,8 @@ return new class extends Migration
             $table->enum('status', array_values(DelayedOrdersQueue::STATUSES))->default(DelayedOrdersQueue::STATUSES['unchecked']);
 
             $table->timestamps();
+
+            $table->index('created_at');
         });
     }
 

@@ -32,6 +32,8 @@ return new class extends Migration
             $table->integer('delay_time');
 
             $table->timestamps();
+
+            $table->index('created_at');
         });
     }
 
