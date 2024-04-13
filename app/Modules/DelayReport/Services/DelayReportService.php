@@ -42,6 +42,7 @@ class DelayReportService
             }
 
             if (DelayedOrdersQueue::checkDelayOrderQueueOfTheOrder(orderId: $orderId)) {
+                DB::commit();
                 return new DelayReportResponseDto(status: false, message: 'Delay has already been submitted for this order.');
             }
 
